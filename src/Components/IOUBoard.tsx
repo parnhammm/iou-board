@@ -1,7 +1,7 @@
 import React from 'react';
 import Employee from '../Definitions/Employee';
 import EmployeeView from "./EmployeeView";
-import axios, { AxiosPromise, AxiosResponse } from "axios";
+import axios, { AxiosResponse } from "axios";
 
 interface AppProps {
 }
@@ -26,7 +26,7 @@ class IOUBoard extends React.Component<AppProps, AppState> {
         this.fetchEmployees();
     }
 
-    public fetchEmployees(): void {
+    public fetchEmployees = (): void => {
         axios
             .get(`${this.rootUrl}/`)
             .then(
@@ -37,11 +37,19 @@ class IOUBoard extends React.Component<AppProps, AppState> {
                     });
                 }
             );
-    }
+    };
+
+    public addAmountToIOU = (id: number, employee: Employee): void => {
+        axios.put(`${this.rootUrl}/${id}`, employee);
+    };
 
     getIOUElements = (): JSX.Element[] => {
         return this.state.employees.map((contact: Employee) => {
-            return <EmployeeView employee={contact} />
+            return <EmployeeView
+                key={contact.id}
+                employee={contact}
+                addAmountToIOU={this.addAmountToIOU}
+            />
         });
     };
 

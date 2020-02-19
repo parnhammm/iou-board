@@ -2,7 +2,8 @@ import React from 'react';
 import Employee from '../Definitions/Employee';
 
 interface EmployeeProps {
-    employee: Employee
+    employee: Employee,
+    addAmountToIOU: (id: number, employee: Employee) => void
 }
 
 interface EmployeeState {
@@ -29,6 +30,8 @@ class EmployeeView extends React.Component<EmployeeProps, EmployeeState> {
         this.setState({
             employee: copyOfEmployee
         });
+
+        this.props.addAmountToIOU(copyOfEmployee.id, copyOfEmployee);
     };
 
     removeFromIOU = () => {
