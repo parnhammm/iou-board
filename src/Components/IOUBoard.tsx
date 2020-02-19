@@ -1,45 +1,46 @@
 import React from 'react';
 import Employee from '../Definitions/Employee';
 import EmployeeView from "./EmployeeView";
+import axios, { AxiosPromise, AxiosResponse } from "axios";
 
 interface AppProps {
 }
 
 interface AppState {
-    employees: Employee[]
+    employees: Employee[],
+    loadingInitialList: boolean
 }
 
 class IOUBoard extends React.Component<AppProps, AppState> {
-    initialContacts = [
-        {
-            id: 1,
-            name: "Andrew Parnham",
-            imgUrl: "",
-            amountOwed: 4.80
-        },
-        {
-            id: 2,
-            name: "Andrew Cuthbert",
-            imgUrl: "",
-            amountOwed: 10.50
-        },
-        {
-            id: 3,
-            name: "Andrew Gough",
-            imgUrl: "",
-            amountOwed: 0.40
-        },
-    ];
+    rootUrl = "http://localhost:3004/employees";
 
     constructor(props: AppProps) {
         super(props);
 
         //We will first initialise our internal array of employees to be an empty array!
-        this.state = { employees: [] };
+        this.state = {
+            employees: [],
+            loadingInitialList: true
+        };
+
+        this.fetchEmployees();
+    }
+
+    public fetchEmployees(): void {
+        axios
+            .get(`${this.rootUrl}/`)
+            .then(
+                (response: AxiosResponse) => {
+                    this.setState({
+                        loadingInitialList: false,
+                        employees: response.data
+                    });
+                }
+            );
     }
 
     getIOUElements = (): JSX.Element[] => {
-        return this.initialContacts.map((contact: Employee) => {
+        return this.state.employees.map((contact: Employee) => {
             return <EmployeeView employee={contact} />
         });
     };
