@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Component, JSXElementConstructor} from 'react';
 import Employee from '../Definitions/Employee';
 
 interface EmployeeProps {
@@ -50,10 +50,10 @@ class EmployeeView extends React.Component<EmployeeProps, EmployeeState> {
     };
 
     render() {
-        let minusElement = <button onClick={() => this.removeFromIOU()}>- 20p</button>;
-        // if (!this.state.showMinusButton) {
-        //     minusElement = null;
-        // }
+        let minusElement: JSX.Element | null = <button onClick={() => this.removeFromIOU()}>- 20p</button>;
+        if (this.state.showMinusButton) {
+            minusElement = null;
+        }
 
         return (
             <li key={this.state.employee.id}>
