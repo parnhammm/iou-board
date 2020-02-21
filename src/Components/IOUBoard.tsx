@@ -64,7 +64,7 @@ class IOUBoard extends React.Component<AppProps, AppState> {
      * @param id number: The ID of the employee to update
      * @param employee Employee: The data to update the employee with
      */
-    public addAmountToIOU = (id: number, employee: Employee): void => {
+    public updateIOUAmount = (id: number, employee: Employee): void => {
         //Calling .put() here will tell the data store to update the value it has
         //stored at ID of id with the employee object we pass
         axios.put(`${this.rootUrl}/${id}`, employee);
@@ -79,7 +79,7 @@ class IOUBoard extends React.Component<AppProps, AppState> {
             return <EmployeeView
                 key={contact.id}
                 employee={contact}
-                addAmountToIOU={this.addAmountToIOU}
+                updateIOUAmount={this.updateIOUAmount}
             />
         });
     };
@@ -88,14 +88,25 @@ class IOUBoard extends React.Component<AppProps, AppState> {
      * Renders out the content we will see on the page
      */
     render() {
-        return (
-            <div className={"js-rootContainer"}>
-                <h1>GCD IOU Board!</h1>
+        let style = {
+            margin: "2em"
+        };
 
+        return (
+            <div className={"js-rootContainer"} style={style}>
                 <div className={"js-listContainer"}>
-                    <ul className={"js-list"}>
-                        {this.getIOUElements()}
-                    </ul>
+                    <div className="ui center aligned column grid">
+                        <div className={"row"}>
+                            <div className="ui warning compact message centered">
+                                <div className="header">Max IOU Amount: £5</div>
+                            </div>
+                        </div>
+                        <div className={"row"}>
+                            <div className={"ui centered five cards"}>
+                                {this.getIOUElements()}
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         );

@@ -5,12 +5,11 @@ import Employee from '../Definitions/Employee';
 //have a look at IOUBoard
 interface EmployeeProps {
     employee: Employee,
-    addAmountToIOU: (id: number, employee: Employee) => void
+    updateIOUAmount: (id: number, employee: Employee) => void
 }
 
 interface EmployeeState {
     employee: Employee
-    showMinusButton: boolean
     isUpdating: boolean
 }
 
@@ -21,7 +20,6 @@ class EmployeeView extends React.Component<EmployeeProps, EmployeeState> {
         //Set up the default state of this component
         this.state = {
             employee: props.employee,
-            showMinusButton: (props.employee.amountOwed !== 0),
             isUpdating: false
         };
     }
@@ -40,7 +38,7 @@ class EmployeeView extends React.Component<EmployeeProps, EmployeeState> {
             employee: copyOfEmployee
         });
 
-        this.props.addAmountToIOU(copyOfEmployee.id, copyOfEmployee);
+        this.props.updateIOUAmount(copyOfEmployee.id, copyOfEmployee);
     };
 
     /**
@@ -57,9 +55,10 @@ class EmployeeView extends React.Component<EmployeeProps, EmployeeState> {
         }
 
         this.setState({
-            employee: copyOfEmployee,
-            showMinusButton: (copyOfEmployee.amountOwed === 0)
+            employee: copyOfEmployee
         });
+
+        this.props.updateIOUAmount(copyOfEmployee.id, copyOfEmployee);
     };
 
     /**
@@ -67,21 +66,38 @@ class EmployeeView extends React.Component<EmployeeProps, EmployeeState> {
      */
     render() {
         //Create the minus element, but if we don't want to show it reset it to "null"
-        let minusElement: JSX.Element | null = <button onClick={() => this.removeFromIOU()}>- 20p</button>;
-        if (!this.state.showMinusButton) {
+        let minusElement: JSX.Element | null = <i className="minus circle big icon" onClick={() => this.removeFromIOU()}/>;
+        if (this.state.employee.amountOwed <= 0) {
             minusElement = null;
         }
 
+        let cardClass = "ui green card centered";
+        if (this.state.employee.amountOwed >= 5) {
+            cardClass = "ui red card centered";
+        }
+
         return (
-            <li key={this.state.employee.id}>
-                <div>
-                    {this.state.employee.name} owes £{this.state.employee.amountOwed.toFixed(2)}
+            <div className={cardClass}>
+                <div className="content">
+                    <img src={this.state.employee.imgUrl} alt={this.state.employee.name} className="ui mini right floated image"/>
+                    <div className="header">{this.state.employee.name}</div>
+                    <div className="description">
+                        <div className="ui center aligned divided three column grid">
+                            <div className={"row"}>
+                                <div className={"column"}>
+                                    <i className="plus circle big icon" onClick={() => this.addToIOU()}/>
+                                </div>
+                                <div className={"column"}>
+                                    <strong>£{this.state.employee.amountOwed.toFixed(2)}</strong>
+                                </div>
+                                <div className={"column"}>
+                                    {minusElement}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <button onClick={() => this.addToIOU()}>+ 20p</button>
-                    {minusElement}
-                </div>
-            </li>
+            </div>
         );
     }
 
